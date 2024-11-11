@@ -1,14 +1,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function Dashboard({ posts }) {
-  const { data, setData, post, processing, errors } = useForm({
-    body: '',
-  });
+export default function Index({ posts }) {
+  const { data, setData, post, processing, errors, reset, clearErrors } =
+    useForm({
+      body: '',
+    });
 
   function submit(e) {
     e.preventDefault();
-    post(route('posts.store'));
+    post(route('posts.store'), { onSuccess: () => reset() });
   }
 
   return (
@@ -34,18 +35,20 @@ export default function Dashboard({ posts }) {
             </label>
             <textarea
               onChange={(e) => setData('body', e.target.value)}
+              onFocus={() => clearErrors('body')}
               name="body"
               id="body"
               cols="30"
               rows="5"
-              value=""
+              value={data.body}
               className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full"
             ></textarea>
+            {errors.body && <p className="text-red-500">{errors.body}</p>}
 
             <button
               type="submit"
-              disabled=""
-              className={`mt-2 bg-gray-700 px-4 py-2 rounded-md font-medium text-white`}
+              disabled={processing}
+              className={`mt-2 bg-gray-700 px-4 py-2 rounded-md font-medium text-white ${processing && 'opacity-50'}`}
             >
               Post
             </button>
