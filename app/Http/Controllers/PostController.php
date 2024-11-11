@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -9,10 +10,14 @@ use Inertia\Inertia;
 class PostController extends Controller
 {
     public function index() {
-        $posts = Post::all();
-        
+        $posts = Post::with('user')->get();
+
         return Inertia::render('Posts/Index', [
-            'posts' => $posts,
+            'posts' => PostResource::collection($posts)
         ]);
+    }
+
+    public function store(Request $request) {
+        dd($request->all());
     }
 }
